@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0a12">
+<title>Акула в формалине · Протокол наблюдателя</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--bg:#0b0a12;--panel:#15121f;--line:#2b2542;--txt:#ece8f7;--dim:#9b94b8;--am:#a97cff;--pink:#ff4fae;--ice:#8fd9ff;--form:#6fe3c1;--red:#ff5a6a;--yel:#ffd36b;--grn:#6fe38f}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 50% -10%,#24163d,var(--bg) 55%) fixed;color:var(--txt);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:0 0 88px}
+main{max-width:640px;margin:0 auto;padding:16px}
+h1,h2,h3{margin:.2em 0 .5em;font-weight:700;letter-spacing:.02em}
+h1{font-size:1.35rem;text-transform:uppercase;background:linear-gradient(90deg,var(--pink),var(--am),var(--ice));-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{font-size:1.1rem;color:var(--ice)}
+.mono{font-family:ui-monospace,"Cascadia Mono",Consolas,monospace;font-size:.85em;color:var(--dim);letter-spacing:.05em}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin:0 0 14px}
+.neon{box-shadow:0 0 0 1px #ff4fae33,0 0 22px #a97cff22}
+.quote{border-left:3px solid var(--am);padding:6px 10px;margin:10px 0;color:#d9d2f2;font-style:italic}
+.quote b{font-style:normal;color:var(--am)}
+.quote.k{border-color:var(--pink)}.quote.k b{color:var(--pink)}
+label{display:block;margin:12px 0 4px;font-weight:600}
+.opt{font-style:italic;font-weight:300;font-size:.88em;color:#c4bee0}
+input[type=text],input[type=number],textarea,select{width:100%;background:#0f0d18;border:1px solid var(--line);border-radius:10px;color:var(--txt);padding:10px;font:inherit}
+textarea{min-height:76px;resize:vertical}
+input[type=range]{width:100%;accent-color:var(--am)}
+.range{display:flex;gap:10px;align-items:center}.range output{min-width:2.2em;text-align:center;font-weight:700;color:var(--pink);font-size:1.2rem}
+.hint{font-size:.85rem;color:var(--dim);margin:2px 0}
+.chk{display:flex;gap:8px;align-items:flex-start;font-weight:400;margin:8px 0}
+.chk input{width:20px;height:20px;accent-color:var(--pink);flex:none}
+button{font:inherit;cursor:pointer;border-radius:12px;border:1px solid var(--line);background:#1d1830;color:var(--txt);padding:12px 14px;min-height:44px}
+button:disabled{opacity:.35;cursor:not-allowed}
+button.pri{background:linear-gradient(90deg,#7a3cff,#ff3fa4);border:0;font-weight:700;width:100%;margin-top:14px}
+button.ghost{background:none;color:var(--dim)}
+button.sel{border-color:var(--pink);color:var(--pink);font-weight:700}
+button.danger{border-color:var(--red);color:var(--red)}
+button.sos{width:100%;margin:0 0 14px;border-color:var(--pink);background:#ff4fae14;font-weight:700}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--ice);outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.row>button{flex:1}
+.ci{width:1.25em;height:1.25em;object-fit:cover;border-radius:6px;vertical-align:-.25em}
+.task{display:flex;align-items:center;gap:6px;margin:0 0 8px}
+.task .ti{font-size:1.35rem;width:1.8rem;text-align:center;flex:none}
+.task .n{flex:1;min-width:0;overflow-wrap:anywhere}.task .c{font-size:.8rem;color:var(--dim)}
+.task .sb{flex:none;width:44px;padding:0;font-size:1.05rem}
+.blu{color:var(--ice)}.grn{color:var(--grn)}.yel{color:var(--yel)}.red{color:var(--red)}
+.top{display:flex;gap:14px;align-items:center}
+.jar{width:110px;flex:none}
+.bar{height:8px;background:#0f0d18;border-radius:8px;overflow:hidden;margin:6px 0}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--form),var(--ice))}
+.month{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:8px}
+.month span{aspect-ratio:1;border-radius:6px;border:1px solid var(--line);display:grid;place-items:center;font-size:.7rem;color:var(--dim)}
+.month .on{background:#a97cff33;border-color:var(--am);color:var(--txt)}.month .now{outline:2px solid var(--pink)}
+.spark{display:flex;align-items:flex-end;gap:3px;height:84px;margin-top:8px}
+.spark i{flex:1;min-height:2px;border-radius:3px 3px 0 0;background:linear-gradient(0deg,var(--am),var(--pink));overflow:hidden}
+.spark i.z{background:var(--line)}
+.spark i.r{background:linear-gradient(0deg,#ff5a6a,#ffa0b0)}
+.spark i.g{background:linear-gradient(0deg,#3fbf80,#6fe38f)}
+.spark i b{display:block;font-size:.55rem;text-align:center;color:#0b0a12;font-style:normal;padding-top:1px}
+.sparkl{display:flex;gap:3px;margin-top:2px}.sparkl span{flex:1;text-align:center;font-size:.55rem;color:var(--dim)}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.badge{border:1px dashed var(--line);border-radius:10px;padding:8px;font-size:.85rem;color:#5d5775}
+.badge.on{border:1px solid var(--form);color:var(--txt);background:#6fe3c112}
+.badge b{display:block}
+.chips{display:flex;flex-wrap:wrap;gap:6px}.chip{background:#0f0d18;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:.85rem}
+.emo{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:6px;margin-top:6px}
+.emo button{font-size:1.3rem;padding:0;min-height:44px;display:grid;place-items:center}.emo button.on{border-color:var(--pink);background:#ff4fae22}
+.emo .ci{width:1.9rem;height:1.9rem;border-radius:8px}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th,td{border-bottom:1px solid var(--line);padding:7px 4px;text-align:left;vertical-align:top}
+th{color:var(--dim);font-weight:600}
+.x{background:none;border:0;color:var(--dim);padding:0 8px;min-height:44px;width:auto;flex:none;font-size:1.1rem}
+.rowl{display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid var(--line);padding:6px 0}
+.hl{display:flex;gap:8px;align-items:flex-start;padding:5px 0;border-bottom:1px solid #2b254255}
+.hl .e{font-size:1.2rem;flex:none;width:1.6rem;text-align:center}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.stats div{background:#0f0d18;border-radius:10px;padding:8px;font-size:.85rem}.stats b{display:block;font-size:1.25rem;color:var(--form)}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:#0b0a12f2;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;border:0;border-radius:0;background:none;color:var(--dim);font-size:.72rem;padding:8px 2px}
+nav button[aria-current=true]{color:var(--pink)}
+nav button span{display:block;font-size:1.25rem}
+#mission{position:fixed;inset:0;background:var(--bg);overflow:auto;z-index:5}
+#mission[hidden],#modal[hidden]{display:none}
+#modal{position:fixed;inset:0;background:#000b;z-index:20;display:grid;place-items:center;padding:16px}
+.mbox{background:var(--panel);border:1px solid var(--am);border-radius:16px;padding:18px;max-width:440px;width:100%;max-height:88vh;overflow:auto}
+.bigxp{font:700 2.4rem ui-monospace,Consolas,monospace;text-align:center;color:var(--form);margin:6px 0}
+.timer{font:700 3rem ui-monospace,Consolas,monospace;text-align:center;color:var(--form);text-shadow:0 0 18px #6fe3c166;margin:18px 0}
+.first{font-size:1.15rem;padding:14px;border-radius:12px;background:#ff4fae14;border:1px solid #ff4fae55}
+#toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#1d1830;border:1px solid var(--am);border-radius:12px;padding:10px 14px;max-width:90vw;z-index:30;opacity:0;transition:opacity .3s;pointer-events:none}
+#toast.on{opacity:1;pointer-events:auto}
+.warn{background:#ff5a6a22;border:1px solid var(--red);border-radius:10px;padding:10px;margin-bottom:14px;font-size:.9rem}
+.goal{display:flex;gap:8px;align-items:center;margin:6px 0}.goal.ok{color:var(--form)}
+@keyframes float{50%{transform:translateY(-3px)}}.shark{animation:float 4s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.shark{animation:none}}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<div id="mission" hidden><main id="mbody"></main></div>
+<div id="modal" hidden><div class="mbox" id="mcont"></div></div>
+<nav>
+  <button data-tab="dossier"><span>🦈</span>Досье</button>
+  <button data-tab="tasks"><span>📋</span>Задания</button>
+  <button data-tab="journal"><span>🗂️</span>Журнал</button>
+  <button data-tab="final"><span>🌙</span>Финал</button>
+  <button data-tab="more"><span>⚙️</span>Ещё</button>
+</nav>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+const D={"L": {"tasks_morning": [["v", "Утро. Хороший момент для одного небольшого дела."], ["v", "Смена открыта. Выбери, с чего начнёшь."], ["k", "Доброе утро, наблюдатель. Первое дело по плану, остальное по самочувствию."], ["k", "Утро — самое тихое время. Пользуйся."], ["k", "Не гонись за списком. Выбери одно дело — и поехали."]], "tasks_day": [["v", "День в разгаре. Выбери дело по силам."], ["v", "Отчёты ждут. Список — тоже."], ["k", "Дневная смена. Музыку на фон — и вперёд."], ["k", "Что сегодня на очереди? Только не всё сразу."], ["k", "Любое дело засчитывается. Даже самое маленькое."]], "tasks_evening": [["v", "Вечер. Подведи итог дня: хотя бы одно дело."], ["v", "К вечеру ресурс убывает. Выбирай по состоянию."], ["k", "Вечерняя смена. Тише, но по делу."], ["k", "Устала? Возьми «Разминку». Это тоже считается."], ["k", "Вечер — время для лёгких дел и хорошего трека."]], "tasks_night": [["v", "Поздно. Если дело можно отложить — отложи. Сон входит в алгоритм."], ["v", "Ночью отчёты не принимаются. Исключение — самые короткие."], ["k", "Не спишь? Давай что-нибудь совсем лёгкое и отбой."], ["k", "Ночные смены вредят наблюдателям. Одно дело — и спать."], ["k", "Сполосни чашку и баиньки. Остальное завтра."]], "start": [["v", "Алгоритм не ждёт настроения. Начни с малого — остальное по ходу."], ["v", "Мне не нужно, чтобы тебе хотелось. Мне нужно, чтобы ты сделала первый шаг."], ["v", "Один шаг. Дальше решишь по обстановке."], ["k", "Включай трек и поехали. Первые две минуты — самые паршивые."], ["k", "Не думай, просто начни. Мысли догонят на светофоре."], ["k", "Пять минут, а там само поедет. Проверено."], ["k", "Включи что-нибудь на фон. Тишина иногда мешает начать."], ["v", "Выбери самое первое движение. Оно ничего не обязывает."]], "start_hard": [["v", "Дело тяжёлое. Разбей его на шаги и возьми первый."], ["v", "Сложное не значит невыполнимое. Начни с самой лёгкой части."], ["k", "Серьёзная задача. Плейлист потяжелее — и вперёд."], ["k", "Большая работа начинается с маленького шага. Банально, но работает."], ["v", "Тяжёлое дело можно прерывать. Остановка — тоже запись."]], "start_easy": [["k", "Лёгкое дело? Тем лучше — сделай и закрой."], ["k", "Пять минут, и в журнале галочка."], ["v", "Простое дело — хороший способ разогнаться."], ["v", "Не недооценивай мелочи: из них складывается смена."], ["k", "Разминка. Размяла руки — и дальше как пойдёт."]], "start_hyg": [["v", "Гигиена — это обслуживание, а не наказание."], ["v", "Шаг первый: просто дойти до места. Остальное потом."], ["k", "Включи трек, который не хочется выключать. Время пройдёт само."], ["k", "Тёплая вода и музыка — уже половина дела."]], "start_study": [["v", "Учёба. Открой материалы, остальное по ходу."], ["v", "Не надо понимать всё сразу. Нужно открыть тетрадь."], ["k", "Лекция на фоне, ручка в руке. Погнали."], ["k", "Первую страницу писать труднее всего. Дальше легче."]], "run": [["k", "Держишься? Красиво. Продолжай в том же темпе."], ["k", "Не останавливайся на ровном месте — дальше интереснее."], ["v", "Работай. Отчёт — потом."], ["v", "Тихо и методично. Так делаются дела."], ["k", "Темп хороший. Не гони, но и не стой."], ["v", "Продолжай. Остановка допустима, если она нужна."], ["k", "Отвлеклась — вернись. Это нормально, так бывает у всех."], ["v", "Ты уже внутри дела. Это самая сложная часть."], ["k", "Трек играет, дело движется. Идеально."], ["v", "Одно движение за другим. Больше ничего не требуется."]], "full": [["v", "Сделано. Протокол принят."], ["v", "Отклонения учтены, результат засчитан. Продолжай."], ["v", "Порядок начинается с малого. Ты это подтвердила."], ["k", "Готово? Чёрт, неплохо. Только не говори Инспектору, что я похвалил."], ["k", "Красиво сделала. Инспектор сделает вид, что не впечатлён."], ["v", "Записано. Это результат, а не обещание."], ["v", "Протокол обновлён. Продолжай по возможности."], ["k", "Вот так выглядит выполненное дело. Запомни ощущение."], ["k", "Красота. Можешь выдохнуть."], ["v", "Отметка принята. Наблюдатель свободен до следующего дела."], ["k", "Сделано — значит, было возможно. Просто факт."], ["v", "Ты начала. Ты закончила. Остальное — детали."]], "full_hard": [["v", "Тяжёлое дело закрыто. Отдельная отметка в протоколе."], ["v", "Это было непросто. Я это учту."], ["k", "Серьёзная работа. Дай себе минуту отдыха, заслужила."], ["k", "Вот это размах. Инспектор даже одобрил бы вслух. Почти."], ["v", "Усилие записано. Отдохни, прежде чем браться за следующее."], ["k", "Ого, справилась с таким. Горжусь, но шёпотом."]], "full_easy": [["k", "Мелочь, а в журнале красиво."], ["v", "Простое дело сделано. Из таких складывается смена."], ["k", "Лёгкая победа — тоже победа."], ["v", "Регулярность важнее масштаба. Продолжай."], ["k", "Быстро и чисто. Мне нравится."], ["v", "Небольшое дело закрыто без потерь."]], "full_hyg": [["v", "Обслуживание проведено. Системе спокойнее."], ["k", "Свежая и готовая к делам. Чисто и без драм."], ["v", "Это важное дело, и оно сделано."], ["k", "Теперь можно и музыку погромче."]], "full_study": [["v", "Учебное дело закрыто. Знания сами не накапливаются."], ["v", "Страница за страницей. Так делаются курсы."], ["k", "Мозг поработал, пусть отдохнёт."], ["k", "Домашка — это просто очередное задание. Это закрыто."]], "full_quick": [["k", "Пара минут — и дело в журнале. Эффективно."], ["v", "Краткость засчитана. Результат есть."], ["k", "Быстрее, чем я ожидал. Хотя ожидал немного."], ["v", "Не всякое дело должно быть долгим."], ["k", "Так и надо: сделала и забыла."]], "full_long": [["v", "Долгая работа. Выносливость записана."], ["k", "Ты провела в деле целую серию. Выдохни и попей воды."], ["v", "После длительной работы нужен перерыв. Это приказ."], ["k", "Марафон! Ноги-руки на месте?"], ["v", "Время потрачено не зря. Протокол это подтверждает."]], "part": [["v", "Не закончила, но начала. Записано. Наблюдатели нужны мне целыми, а не измотанными."], ["v", "Частично — тоже результат. Остальное подождёт."], ["k", "Заглохла? Бывает даже с лучшими тачками. Заведёмся заново."], ["k", "Половина дела лучше нуля. Это математика."], ["v", "Остальное можно закончить в другой раз."], ["k", "Сделала, сколько смогла. Этого достаточно."], ["v", "Незавершённое дело — не провал, а задел."], ["k", "Лучше остановиться вовремя, чем выжать себя до дна."]], "sos": [["k", "Не можешь начать? Окей. Одна вещь, запускаем таймер и смотрим, что дальше."], ["k", "Стоп-кадр. Выдохни. Что самое маленькое можно сделать прямо сейчас?"], ["v", "Остановка — не нарушение. Выбери один шаг и сделай его."], ["v", "Просьба о помощи — рабочий инструмент. Используй его."], ["k", "Окей, без паники. Давай совсем крошечный шаг."], ["k", "Запускай дело, а там посмотришь. Таймер сам всё запишет."], ["v", "Назови самое маленькое действие. Его и выполни."], ["k", "Не обязана хотеть. Достаточно начать."]], "sosyes": [["k", "Вот и началось. Дальше легче."], ["v", "Начало положено. Продолжай, сколько сможешь."], ["k", "Видишь? Самое трудное уже позади."], ["v", "Первый шаг сделан. Остальное — по ситуации."], ["k", "Стоп-кадр сработал. Поехали."]], "sosfail": [["v", "Не вышло — записано. Это данные, а не провал. Возвращайся, когда будет ресурс."], ["k", "Бывает. Сегодня не пошло — завтра заведёмся."]], "gap": [["v", "Перерыв — не нарушение. Возвращайся, когда будет ресурс. Дело подождёт."], ["k", "Пропала? Ничего. Трек всё ещё играет, заходи."], ["v", "Ты вернулась. Этого достаточно, чтобы продолжить."], ["k", "Давно не виделись. Ничего, продолжим с любого места."], ["v", "Перерыв не обнуляет прогресс. Он сохранён."], ["k", "С возвращением. Музыку включить?"]], "rest": [["v", "Режим восстановления принят. Отдыхай. Вернёшься на алгоритм, когда будешь готова."], ["k", "Плохой день — это тоже день. Отлежись, потом вернёмся."], ["v", "Отдых — часть протокола."], ["k", "Лежать тоже надо уметь. Лежи."], ["v", "Сегодня задач нет. Восстанавливайся."], ["k", "Плохой день пройдёт. Хороший будет потом."]], "final": [["v", "Финальный отчёт. Заполни честно: мне нужна точность, а не красота."], ["v", "Ты проделала работу. Опиши её как есть."], ["k", "Последний рывок: расскажи, как оно было на самом деле."], ["k", "Анкета, не допрос. Просто напиши, что думаешь."], ["v", "Данные ценны, даже если они не в твою пользу."], ["k", "Не приукрашивай. Тут все свои."], ["v", "Смена подходит к итогу. Подведи его без спешки."], ["k", "Ответы не оцениваются, только записываются."], ["v", "Обрати внимание на то, что изменилось, и на то, что нет."], ["k", "Заполнила — и дело закрыто. Почти."]], "dossier_d1": [["v", "Первая неделя. Привыкай к форме, спешить некуда."], ["v", "Для начала достаточно одного дела в день."], ["k", "Новичок в смене? Все с чего-то начинают."], ["k", "Первые дни самые шумные. Потом станет тише."]], "dossier_d2": [["v", "Вторая неделя. Рутина складывается из повторений."], ["v", "Ты уже знаешь, как это работает. Теперь закрепляй."], ["k", "Вторая неделя — самая вязкая: новизна прошла, привычка ещё не пришла."], ["k", "Не торопись. Устойчивость важнее скорости."]], "dossier_d3": [["v", "Третья неделя. Проверь, что действительно работает именно для тебя."], ["v", "Уже видно, какие дела даются легче. Используй это."], ["k", "Третья неделя. Пора добавить что-нибудь своё."], ["k", "Видишь, как банка наполняется? Идёшь по графику."]], "dossier_d4": [["v", "Последняя неделя. Подводить итоги рано, но можно оглянуться."], ["v", "Месяц почти позади. Осталось закрепить."], ["k", "Финишная прямая. Не гони, просто не съезжай с трассы."], ["k", "Осталось немного. Дальше сама."]], "dossier_d5": [["v", "Срок смены вышел. Прогресс сохраняется, можно продолжать."], ["v", "Месяц позади. Дальше — по собственному расписанию."], ["k", "Смена закончилась, но трек можно не выключать."], ["k", "Всё, что сделано после срока, — уже по твоей воле."]], "streak": [["v", "Несколько дней подряд. Регулярность — редкий ресурс."], ["k", "Серия идёт! Не ломай ритм без нужды."], ["v", "Дни выстраиваются в цепочку. Хороший признак."], ["k", "Ты в потоке. Береги его, но если собьётся — не страшно."], ["v", "Порядок появляется там, где есть повторение."]], "rankup": [["v", "Звание повышено. Это заслужено."], ["k", "Новое звание. Носи с гордостью, но без лишней помпы."], ["v", "Допуск расширен. Отмечено в личном деле."], ["k", "Растёшь, наблюдатель. Инспектор уже в курсе."], ["v", "Новый уровень. Следующий — дальше по тому же пути."]], "cap": [["v", "Дневной лимит опыта набран. Остальные дела идут в журнал, но почти без XP. Отдохни."], ["k", "На сегодня хватит. Дела записаны, а завтра будет новый день."], ["v", "Сверх нормы очки почти не начисляются. Это забота, а не наказание."], ["k", "Не перетрудись: опыт дальше растёт медленнее, а ты — нет."]], "ach": [["v", "Достижение зафиксировано."], ["k", "Ну надо же, ещё один значок."], ["v", "Отметка в личном деле."], ["k", "Красивая вещь, заслужила."], ["v", "Достижение подтверждено протоколом."], ["k", "Копи значки. Хотя главное всё-таки дела."]]}, "BRIEF": {"1": [["v", "Неделя первая: допуск. Задача одна — приучить систему к тому, что ты приходишь."], ["k", "Первая неделя: знакомься с формой. Берись за любое дело, которое не пугает."]], "2": [["v", "Неделя вторая: смена. Закрепляем то, что получилось. Новые дела — по желанию."], ["k", "Вторая неделя: рутина. Скучно, зато работает."]], "3": [["v", "Неделя третья: проверка. Посмотри на журнал. Что даётся легче, что тяжелее?"], ["k", "Третья неделя: добавь что-то своё. Любую мелочь."]], "4": [["v", "Неделя четвёртая: итоговая. Банка почти полна, осталось не сбавлять ход."], ["k", "Последняя неделя: держись курса, и без паники."]], "5": [["v", "Срок смены вышел. Протокол ждёт финального рапорта."], ["k", "Смена окончена, но ты в игре, пока сама решаешь."]]}, "ENDS": {"0": ["Смена продлена", [["v", "Срок смены истёк. Порог не набран. Я ожидал этого не от тебя, а в принципе: далеко не каждая смена закрывается в срок."], ["k", "Погоди, это что, плохая новость? Это даже не новость. Это продление."], ["v", "Продление оформлено. Все записи сохранены, банка остаётся на том уровне, который ты наполнила."], ["k", "Видишь отметку? Это не провал. Это точка, откуда стартуем."], ["v", "В протоколе нет слова «опоздала». Есть слово «продолжение»."]]], "1": ["Протокол закрыт", [["v", "Порог пройден. Протокол № 7-Д закрыт."], ["k", "Банка полна! Инспектор, вы видели? Видел, просто делает вид, что нет."], ["v", "За смену ты набрала нужный опыт и довела дела до записи в протоколе. Это внесено в личное дело."], ["k", "Знаешь, что самое классное? Банку наполнила ты сама, а не кто-то за тебя."], ["v", "Допуск подтверждён. Дальше — на твоё усмотрение."]]], "2": ["Допуск расширен", [["v", "Протокол закрыт, и закрыт шире, чем предполагалось. Ты работала в разных направлениях."], ["k", "Смотри, что в твоём списке: {cats}. Столько разных направлений за одну смену — это круто."], ["v", "Допуск расширен. Теперь ты вправе сама выбирать, где и когда работать."], ["k", "А я говорил, что получится. Ну, думал про себя."], ["v", "Отметка в досье: «Способна распределять усилия»."]]], "3": ["Своя смена", [["v", "Протокол закрыт, допуск расширен. И ещё: ты делала это регулярно."], ["k", "Не меньше половины месяца в строю. Это не случайность."], ["v", "Такая смена не требует надзора. Расписание теперь составляешь ты."], ["k", "То есть мы с Инспектором безработные? Прекрасно. Я пойду танцевать."], ["v", "Дело № 7-Д передаётся тебе. Продолжай по своему алгоритму."]]]}};
+const LINES=D.L,BRIEF=D.BRIEF,ENDS=D.ENDS;
+const CAT_IMG='data:image/jpeg;base64,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';
+const ico=x=>x==='img:cat'?`<img class="ci" src="${CAT_IMG}" alt="кот">`:esc(x);
+const icTxt=x=>x==='img:cat'?'🐈':x;
+const CALLSIGN='R-900-SSSP';
+const LV=[null,
+ {n:'Разминка',h:'почти без усилий',xp:5,c:'blu',e:'🟦'},
+ {n:'Рутина',h:'привычное дело',xp:10,c:'grn',e:'🟩'},
+ {n:'Нагрузка',h:'нужно собраться',xp:20,c:'yel',e:'🟨'},
+ {n:'Испытание',h:'тяжело начать',xp:35,c:'red',e:'🟥'},
+ {n:'Прорыв',h:'самое трудное, быстрее всего растит навык',xp:50,c:'red',e:'🟪'}];
+const GOAL=450,QDAYS=30,NEED_CATS=3,NEED_DAYS=15,DAYCAP=100,OVERRATE=0.1;
+const RANKS=[[0,'Стажёр'],[70,'Младший наблюдатель'],[180,'Наблюдатель'],[315,'Старший наблюдатель'],[450,'Доверенное лицо Инспектора']];
+const INTR=['Поломка / засор / что-то непредвиденное','Пришлось переключиться на другое дело','Отвлеклась на телефон','Кончились силы','Другое'];
+const DEF_CATS=[{id:'home',name:'Быт',icon:'🏠'},{id:'hyg',name:'Гигиена',icon:'🚿'},{id:'study',name:'Учёба',icon:'📚'},{id:'own',name:'Своё',icon:'⭐'}];
+const OLDT={vac:['Пропылесосить',2,'достать пылесос и включить в розетку'],floor:['Помыть полы',3,'набрать ведро воды'],closet:['Разобрать вещи в шкафах',4,'открыть одну полку и вынуть три вещи'],dish:['Помыть посуду',2,'вымыть одну чашку'],stove:['Помыть плиту',2,'намочить губку'],bath:['Разобрать ванную',4,'убрать с полки одну вещь'],basin:['Разобрать тазик в ванной',3,'достать из тазика одну вещь'],cook:['Приготовить еды',3,'поставить воду на огонь']};
+const EMO=['🏠','🧹','🧽','🍽️','🍳','🧺','🛁','🚿','🪥','🧼','📚','✏️','💻','🎧','🎮','🎨','✍️','🛒','img:cat','🌱','🚶','🏃','💪','🧘','😴','💊','📞','✉️','💰','🗂️','🧴','🪟','🗑️','🔧','🧦','👕','🍎','☕','🎵','📖','🔥','⭐','🦈','📌'];
+const CTXN={start:'Перед началом дела',run:'Во время дела',full:'Дело сделано',part:'Дело сделано частично',sos:'Кнопка «не могу начать»',sosyes:'После запуска из «не могу начать»',sosfail:'Не получилось начать',gap:'После перерыва',rest:'Плохой день',tasks:'Экран заданий',final:'Экран финала',dossier:'Экран досье',streak:'Серия дней',rankup:'Новое звание',cap:'Дневной лимит опыта',ach:'Достижение'};
+const ACH=[
+ {id:'first',n:'Первый протокол',d:'записать первое дело',xp:5,ck:L=>L.length>=1},
+ {id:'stop',n:'Стоп-кадр',d:'нажать «не могу начать» и всё равно начать',xp:10,hid:true,ck:()=>S.sos.some(x=>x.started)},
+ {id:'cats',n:'Разные направления',d:'дела минимум в 3 категориях',xp:10,ck:L=>new Set(L.map(l=>l.cat)).size>=3},
+ {id:'own',n:'Своё дело',d:'выполнить дело, которое добавила сама',xp:5,ck:L=>L.some(l=>task(l.task)&&!OLDT[l.task])},
+ {id:'hard',n:'Через усилие',d:'довести до конца «Испытание» или «Прорыв»',xp:10,ck:L=>L.some(l=>l.done&&l.lvl>=4)},
+ {id:'force',n:'Форс-мажор',d:'помеха была, но дело закончено',xp:5,ck:L=>L.some(l=>l.done&&l.intr&&l.intr.length)},
+ {id:'track',n:'Под трек',d:'5 дел с музыкой или лекцией на фоне',xp:5,ck:L=>L.filter(l=>l.lecture).length>=5},
+ {id:'d3',n:'Три дня подряд',d:'дела три дня подряд',xp:10,ck:()=>streak()>=3},
+ {id:'d7',n:'Неделя',d:'7 разных дней с делами',xp:10,ck:()=>days().size>=7},
+ {id:'d14',n:'Две недели',d:'14 разных дней с делами',xp:15,ck:()=>days().size>=14},
+ {id:'back',n:'Возвращение',d:'вернуться к делам после перерыва в 3 дня и больше',xp:10,hid:true,ck:()=>comeback()},
+ {id:'rest',n:'Честный день',d:'отметить плохой день',xp:5,hid:true,ck:()=>S.logs.some(l=>l.type==='rest')}
+];
+const OPT='<span class="opt">(необязательно)</span>';
+
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const dayKey=t=>new Date(t).toLocaleDateString('sv');
+const fmt=t=>new Date(t).toLocaleString('ru',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+const ruDate=k=>new Date(k+'T00:00').toLocaleDateString('ru');
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const avg=a=>a.length?(a.reduce((s,x)=>s+x,0)/a.length):0;
+const val=id=>document.getElementById(id).value.trim();
+
+const KEY='akula-v5',OLD='shark-protocol-v1';
+function fresh(){return{v:5,name:'',greeted:false,start:null,quest:{start:null},cats:DEF_CATS.map(c=>({...c})),tasks:Object.keys(OLDT).map(id=>({id,name:OLDT[id][0],cat:'home',lvl:OLDT[id][1],first:OLDT[id][2],icon:''})),logs:[],end:null,active:null,sos:[],lines:[],voices:{v:true,k:true},seen:{t:[]},lastBackup:null,ach:{},lvlHist:[],diary:[],trash:[],pro:null}}
+function fill(s){const f=fresh();for(const k in f)if(s[k]===undefined||(s[k]===null&&!['start','end','active','lastBackup','pro'].includes(k)))s[k]=f[k];if(!s.quest)s.quest={start:null};if(!s.seen.t)s.seen={t:[]};
+ s.cats.forEach(c=>{if(c.icon==='🐈')c.icon='img:cat'});s.tasks.forEach(t=>{if(t.icon==='🐈')t.icon='img:cat'});
+ s.voices={v:true,k:true};s.v=5;return s}
+function proFrom(o){if(!o||!Array.isArray(o.logs)||!o.logs.length)return null;
+ return{name:o.name||'',start:o.start||null,end:o.end||null,logs:o.logs.map(l=>{const t=OLDT[l.task]||['Дело',2,''];return{id:l.id,ts:l.ts,task:l.task,tname:t[0],cat:'home',cname:'Быт',lvl:t[1],min:l.min||0,before:l.before,bw:l.bw||'',after:l.after,done:l.done,intr:l.intr||[],note:l.note||'',lecture:l.lecture||'',first:l.first||''}})}}
+let storageOk=true;
+try{localStorage.setItem(KEY+'-t','1');storageOk=localStorage.getItem(KEY+'-t')==='1'}catch(e){storageOk=false}
+navigator.storage?.persist?.();
+function load(){let s=null;try{s=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+ if(s)return fill(s);
+ s=fresh();try{s.pro=proFrom(JSON.parse(localStorage.getItem(OLD)))}catch(e){}
+ if(s.pro&&s.pro.name)s.name=s.pro.name;return s}
+let S=load(),tab=S.start?'tasks':'dossier',jtab='logs',XPM={},WHY={},modalCb=null,welcomeNew=false,lastExport=null;
+function save(opt){const a=checkAch();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){storageOk=false}render();
+ if(a.length&&!(opt&&opt.hold))showAch(a);return a}
+function toast(m,ms){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),ms||Math.max(6000,3000+m.length*80))}
+const task=id=>S.tasks.find(t=>t.id===id);
+const cat=id=>S.cats.find(c=>c.id===id);
+const catKey=id=>id==='hyg'||id==='study'?id:'';
+
+function modal(h){document.getElementById('mcont').innerHTML=h;document.getElementById('modal').hidden=false}
+function closeModal(){document.getElementById('modal').hidden=true;modalCb=null}
+function modalOk(){const f=modalCb;closeModal();if(f)f()}
+function ask(text,okLabel,cb,danger){modalCb=cb;modal(`<p>${esc(text)}</p><div class="row"><button onclick="closeModal()">Отмена</button><button class="${danger?'danger':'pri'}" style="${danger?'':'margin:0;width:auto'}" onclick="modalOk()">${esc(okLabel)}</button></div>`)}
+
+const who=w=>w==='k'?'Кавински':'Инспектор Войд';
+function lineFrom(base,spec,ck){spec=spec||[];ck=ck||base;
+ const own=c=>(LINES[c]||[]).concat(S.lines.filter(x=>x.ctx===c).map(x=>[x.who,x.text]));
+ let pools=[own(base)];if(ck!==base)pools[0]=pools[0].concat(S.lines.filter(x=>x.ctx===ck).map(x=>[x.who,x.text]));
+ const sp=spec.map(c=>LINES[c]||[]).filter(p=>p.length);
+ let pool=pools[0].concat(...sp);if(sp.length&&Math.random()<.5)pool=[].concat(...sp);
+ if(!pool.length)return null;
+ let f=pool.filter(p=>!S.seen.t.includes(p[1]));if(!f.length)f=pool;const p=pick(f);S.seen.t.push(p[1]);S.seen.t=S.seen.t.slice(-90);return p}
+const qt=p=>p?`<div class="quote ${p[0]==='k'?'k':''}"><b>${who(p[0])}:</b> ${esc(p[1])}</div>`:'';
+const sy=p=>p?`${who(p[0])}: ${p[1]}`:'';
+const tod=()=>{const h=new Date().getHours();return h>=5&&h<11?'morning':h>=11&&h<17?'day':h>=17&&h<23?'evening':'night'};
+const stage=()=>{const n=dayN();return n<=7?1:n<=14?2:n<=21?3:n<=30?4:5};
+function startLine(t){const sp=[];if(t.lvl>=4)sp.push('start_hard');else if(t.lvl<=2)sp.push('start_easy');const k=catKey(t.cat);if(k)sp.push('start_'+k);return lineFrom('start',sp)}
+function fullLine(l){const sp=[];if(l.lvl>=4)sp.push('full_hard');else if(l.lvl<=2)sp.push('full_easy');const k=catKey(l.cat);if(k)sp.push('full_'+k);if(l.min&&l.min<=3)sp.push('full_quick');if(l.min>=45)sp.push('full_long');return lineFrom('full',sp)}
+
+function xpMap(){const m={},w={},seen={},first={},ds={};WHY=w;
+ [...S.logs].sort((a,b)=>a.ts-b.ts).forEach(l=>{const d=dayKey(l.ts);let x;const notes=[];
+  if(l.type==='rest'){x=first[d+'r']?0:3;first[d+'r']=1;if(!x)notes.push('режим восстановления за день уже засчитан')}
+  else{x=LV[l.lvl].xp;if(!l.done){x=Math.ceil(x/2);notes.push('частично — половина опыта')}
+   const k=d+'|'+(l.task||l.tname);seen[k]=(seen[k]||0)+1;
+   if(seen[k]===2){x=Math.ceil(x/2);notes.push('повтор того же дела за день — половина')}else if(seen[k]>2){x=Math.min(x,2);notes.push('то же дело больше двух раз за день — по 2 XP')}
+   if(!first[d]){x+=3;first[d]=1;notes.push('+3 за первое дело дня')}
+   const room=Math.max(0,DAYCAP-(ds[d]||0));
+   if(x>room){const over=x-room;x=room+Math.max(room===0?1:0,Math.round(over*OVERRATE));notes.push('дневной лимит '+DAYCAP+' XP набран: сверх него даётся только 10% опыта (минимум 1)')}
+   ds[d]=(ds[d]||0)+x}
+  m[l.id]=x;w[l.id]=notes.join('; ')});return m}
+const xpOf=l=>XPM[l.id]||0;
+const achXp=()=>ACH.filter(a=>S.ach[a.id]).reduce((s,a)=>s+a.xp,0);
+const total=()=>S.logs.reduce((s,l)=>s+xpOf(l),0)+achXp();
+const rank=x=>RANKS.filter(r=>x>=r[0]).pop()[1];
+const nextRank=x=>RANKS.find(r=>r[0]>x);
+const days=()=>new Set(S.logs.map(l=>dayKey(l.ts)));
+const baseDate=()=>S.quest.start||(S.start&&S.start.date)||dayKey(Date.now());
+const dayOf=ts=>Math.floor((new Date(dayKey(ts))-new Date(baseDate()))/864e5)+1;
+const dayN=()=>S.start?dayOf(Date.now()):0;
+const real=()=>S.logs.filter(l=>l.type!=='rest');
+const sortedDays=()=>[...days()].sort();
+const gapDays=(a,b)=>Math.round((new Date(b)-new Date(a))/864e5);
+function streak(){const d=sortedDays();let best=0,cur=0;d.forEach((k,i)=>{cur=(i>0&&gapDays(d[i-1],k)===1)?cur+1:1;best=Math.max(best,cur)});return best}
+function comeback(){const d=sortedDays();return d.some((k,i)=>i>0&&gapDays(d[i-1],k)>=4)}
+function checkAch(){const L=real(),out=[];ACH.forEach(a=>{if(!S.ach[a.id]&&a.ck(L)){S.ach[a.id]=Date.now();out.push(a)}});return out}
+function achBlock(list){return list.length?`<h3>🏆 ${list.length>1?'Достижения':'Достижение'}</h3>${list.map(a=>`<p><b>${esc(a.n)}</b> · +${a.xp} XP<br><span class="hint">${esc(a.d)}</span></p>`).join('')}${qt(lineFrom('ach'))}`:''}
+function showAch(list){modal(`<h2>Новое достижение</h2>${achBlock(list)}<button class="pri" onclick="closeModal()">Ок</button>`)}
+
+function jar(p){const h=Math.round(125*Math.max(.08,Math.min(1,p)));return`<svg class="jar" viewBox="0 0 120 165" role="img" aria-label="Банка с формалином заполнена на ${Math.round(p*100)}%">
+<defs><clipPath id="cj"><rect x="12" y="28" width="96" height="130" rx="12"/></clipPath><linearGradient id="lq" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6fe3c1" stop-opacity=".75"/><stop offset="1" stop-color="#2a8f8a" stop-opacity=".9"/></linearGradient></defs>
+<rect x="20" y="8" width="80" height="16" rx="4" fill="#2b2542" stroke="#a97cff"/>
+<rect clip-path="url(#cj)" x="12" y="${158-h}" width="96" height="${h}" fill="url(#lq)"/>
+<g transform="translate(19,76) scale(.84)"><g class="shark"><path d="M14 30 L2 12 L20 26 Q40 18 52 19 L58 6 L64 20 Q84 22 96 30 Q84 36 66 37 L60 46 L54 37 Q36 38 20 33 L6 44 Z" fill="#15121f" stroke="#8fd9ff" stroke-width="1.2"/><circle cx="85" cy="28" r="1.6" fill="#ff4fae"/></g></g>
+<rect x="12" y="28" width="96" height="130" rx="12" fill="none" stroke="#8fd9ff" stroke-width="2" opacity=".8"/>
+<rect x="20" y="40" width="6" height="90" rx="3" fill="#fff" opacity=".12"/></svg>`}
+function slider(id,v,lo,hi,req){return`<div class="range"><span class="mono">${lo}</span><input type="range" id="${id}" min="${lo}" max="${hi}" value="${v}" data-t="${req?0:1}" oninput="this.dataset.t=1;this.nextElementSibling.nextElementSibling.value=this.value"><span class="mono">${hi}</span><output>${v}</output></div>`}
+const lvPicker=sel=>[1,2,3,4,5].map(i=>`<label class="chk"><input type="radio" name="lv" value="${i}" ${i===(sel||2)?'checked':''}><span>${LV[i].e} <b>${LV[i].n}</b> — ${LV[i].h} · +${LV[i].xp} XP</span></label>`).join('');
+const lvVal=()=>+(document.querySelector('[name=lv]:checked')?.value||2);
+const catOpts=sel=>S.cats.map(c=>`<option value="${c.id}" ${c.id===sel?'selected':''}>${esc(icTxt(c.icon))} ${esc(c.name)}</option>`).join('');
+function emoPicker(id,sel){return`<input type="hidden" id="${id}" value="${esc(sel||'')}"><div class="emo" id="${id}-g">${EMO.map(e=>`<button type="button" class="${e===sel?'on':''}" data-e="${e}" onclick="pickEmo('${id}','${e}')" aria-label="Значок ${e==='img:cat'?'кот':e}">${ico(e)}</button>`).join('')}</div>`}
+function pickEmo(id,e){const h=document.getElementById(id),same=h.value===e;h.value=same?'':e;document.querySelectorAll('#'+id+'-g button').forEach(b=>b.classList.toggle('on',!same&&b.dataset.e===e))}
+
+function render(){
+ XPM=xpMap();
+ document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.tab===tab));
+ const w=storageOk?'':'<div class="warn">⚠️ Этот браузер не сохраняет данные. Открой файл из одного и того же места в Chrome — иначе записи пропадут.</div>';
+ document.getElementById('app').innerHTML=w+({dossier,tasks,journal,final,more})[tab]();
+ renderMission();
+}
+
+function proText(){const P=S.pro;if(!P)return'';const dd=new Set(P.logs.map(l=>dayKey(l.ts))).size;
+ return`<div class="quote"><b>Инспектор Войд:</b> В архиве найдено дело пробной недели: ${P.logs.length} записей за ${dd} дн. Они приобщены к делу № 7-Д как «Пролог».</div><div class="quote k"><b>Кавински:</b> В зачёт смены они не идут. Но именно по ним тебе и выдали допуск.</div>`}
+function welcome(){
+ return`<h1>Протокол наблюдателя</h1><p class="mono">ИДЕАЛЬНЫЙ МИР · ОТДЕЛ НАБЛЮДЕНИЯ · ДЕЛО № 7-Д</p>
+ <div class="card neon"><div class="quote"><b>Инспектор Войд:</b> Идентификация завершена. Позывной: <b style="color:var(--pink)">${CALLSIGN}</b>.</div>
+ <div class="quote"><b>Инспектор Войд:</b> Я мог обознаться. Допуск выдаётся одному человеку, и это должен быть именно тот самый. Это твой позывной?</div>
+ ${S.pro?proText():''}
+ ${welcomeNew?`<label for="nm">Твой настоящий позывной</label><input type="text" id="nm" maxlength="40" autocomplete="off"><button class="pri" onclick="setCall(true)">Подтвердить позывной</button><button class="ghost" style="width:100%;margin-top:8px" onclick="welcomeNew=false;render()">Назад</button>`
+ :`<button class="pri" onclick="setCall(false)">Да, это я</button><button style="width:100%;margin-top:10px" onclick="welcomeNew=true;render()">Нет, система ошиблась</button>`}</div>`}
+function setCall(custom){if(custom){const n=val('nm');if(!n){toast('Введи позывной');return}S.name=n}else S.name=CALLSIGN;S.greeted=true;welcomeNew=false;save()}
+const restToday=()=>S.logs.some(l=>l.type==='rest'&&dayKey(l.ts)===dayKey(Date.now()));
+function dossier(){
+ if(!S.start&&!S.greeted)return welcome();
+ if(!S.start)return`<h1>Протокол наблюдателя</h1><p class="mono">ПОЗЫВНОЙ: ${esc(S.name)} · ДЕЛО № 7-Д</p>
+ <div class="card neon"><div class="quote"><b>Инспектор Войд:</b> Позывной принят, ${esc(S.name)}. Тебе назначена смена на ${QDAYS} дней. Дела — любые, какие ты выберешь сама.</div>
+ <div class="quote k"><b>Кавински:</b> Звучит скучно, знаю. Поэтому делаем по-нашему — с музыкой… ну, с лекцией.</div>
+ ${S.pro?proText():''}
+ <h2>Правила операции</h2><ol><li><b>Действие раньше мотивации.</b> Не ждёшь настроения — делаешь крошечный первый шаг.</li><li><b>Дела и категории свои.</b> Добавляй любые, сложность выбираешь сама и можешь менять.</li><li><b>Отметка после дела:</b> насколько не хотелось начинать и как ты себя чувствуешь.</li><li>Помехи и плохие дни — не провал, а <b>данные</b>. Есть режим восстановления и кнопка «не могу начать».</li></ol></div>
+ <div class="card"><h2>Входной протокол</h2>
+ <label for="ez">Насколько просто тебе сейчас справляться со скучными делами?</label><p class="hint">0 — совсем никак, 10 — легко и без усилий</p>${slider('ez',5,0,10)}
+ <label for="eznote">Пара слов о том, как это сейчас ощущается ${OPT}</label><textarea id="eznote"></textarea>
+ <button class="pri" onclick="startExp()">Принять задание</button></div>`;
+ const x=total(),nr=nextRank(x),dd=days(),n=dayN(),d0=new Date(baseDate()),st=stage();
+ const month=[...Array(QDAYS)].map((_,i)=>{const k=dayKey(d0.getTime()+i*864e5+12*36e5);return`<span class="${dd.has(k)?'on':''} ${i+1===n?'now':''}">${i+1}</span>`}).join('');
+ const cs={};real().forEach(l=>{const c=cs[l.cat]||(cs[l.cat]={name:(cat(l.cat)||{name:l.cname}).name,icon:(cat(l.cat)||{icon:'📌'}).icon,xp:0,n:0});c.xp+=xpOf(l);c.n++});
+ const chips=Object.values(cs).map(c=>`<span class="chip">${ico(c.icon)} ${esc(c.name)} — ${c.xp} XP · ${c.n}</span>`).join('')||'<span class="hint">Пока нет записей.</span>';
+ const last=S.logs.length?Math.max(...S.logs.map(l=>l.ts)):0;
+ const gap=S.logs.length&&Date.now()-last>3*864e5?qt(lineFrom('gap')):'';
+ const bk=S.logs.length>=3&&(!S.lastBackup||Date.now()-S.lastBackup>5*864e5)?'<div class="card"><b>Копия данных.</b> <span class="hint">Скачай резервную копию: вкладка «Ещё» → «Данные». Если очистится браузер, записи пропадут.</span></div>':'';
+ const got=ACH.filter(a=>S.ach[a.id]).length;
+ const br=BRIEF[st].map(p=>qt(p)).join('');
+ const proCard=S.pro?`<div class="card"><h2>Пролог</h2><p class="hint">Пробная неделя: ${S.pro.logs.length} записей. Хранится в архиве (Журнал → Пролог), в опыт не входит.</p></div>`:'';
+ const restCard=restToday()?`<div class="card"><p>🌙 Сегодня отмечен плохой день.</p><button class="danger" style="width:100%" onclick="cancelRest()">Отменить режим плохого дня</button><p class="hint">Отметка исчезнет, и день перестанет считаться днём на смене, если за него нет других записей.</p></div>`:`<div class="card"><button style="width:100%" onclick="restDay()">🌙 Плохой день — режим восстановления</button><p class="hint">Засчитывается как день на смене и даёт немного опыта. Без отчёта.</p></div>`;
+ return`<h1>Досье: ${esc(S.name||'наблюдатель')}</h1><p class="mono">ДЕНЬ ${Math.max(1,n)} ИЗ ${QDAYS} · СТАРТ ${ruDate(baseDate())}</p>${gap}
+ <div class="card neon"><div class="mono">БРИФИНГ · НЕДЕЛЯ ${Math.min(st,4)}${st===5?' · СРОК ВЫШЕЛ':''}</div>${br}${qt(lineFrom('dossier_d'+st,[],'dossier'))}</div>
+ <div class="card neon top">${jar(x/GOAL)}<div style="flex:1"><div class="mono">ЗВАНИЕ</div><h2 style="color:var(--pink)">${rank(x)}</h2>
+ <div class="mono">ФОРМАЛИН: ${x} / ${GOAL} XP</div><div class="bar"><i style="width:${Math.min(100,x/GOAL*100)}%"></i></div>
+ <p class="hint">${nr?`До «${nr[1]}» — ${nr[0]-x} XP`:'Банка полна. Экспонат на месте.'}</p></div></div>
+ ${bk}<div class="card"><h2>Смена</h2><div class="month">${month}</div><p class="hint">Концовку смотри во вкладке «Финал».</p></div>
+ <div class="card"><h2>Направления</h2><div class="chips">${chips}</div></div>
+ ${restCard}
+ <div class="card"><h2>Достижения ${got}/${ACH.length}</h2><div class="badges">${ACH.map(a=>{const on=!!S.ach[a.id];return`<div class="badge ${on?'on':''}"><b>${on?'★':'☆'} ${on||!a.hid?esc(a.n):'???'} · +${a.xp}</b>${on||!a.hid?esc(a.d):'скрытое достижение'}</div>`}).join('')}</div></div>
+ ${proCard}
+ <div class="card"><p class="hint">Опыт за дело: ${[1,2,3,4,5].map(i=>LV[i].n+' '+LV[i].xp).join(' · ')}. Не доделала — половина. Первое дело дня +3. Повтор того же дела за день — половина, третий раз и далее по 2. С дел не больше ${DAYCAP} XP в день; сверх лимита даётся 10% опыта (минимум 1). Достижения дают разовый опыт.</p></div>`;
+}
+function startExp(){S.start={date:dayKey(Date.now()),ease:+val('ez'),note:val('eznote')};S.quest={start:S.start.date};tab='tasks';save();toast('Инспектор Войд: Задание принято. Приступай.')}
+function restDay(){if(restToday()){toast('Режим восстановления на сегодня уже отмечен.');return}
+ S.logs.push({id:Date.now(),ts:Date.now(),type:'rest',task:'',tname:'Режим восстановления',cat:'',cname:'',lvl:0,min:0,resist:null,after:null,done:true,intr:[],note:'',lecture:'',first:'',quick:true});
+ const m=sy(lineFrom('rest'));save();toast(m)}
+function cancelRest(){ask('Отменить режим плохого дня на сегодня? Отметка будет удалена.','Отменить режим',()=>{
+ S.logs=S.logs.filter(l=>!(l.type==='rest'&&dayKey(l.ts)===dayKey(Date.now())));
+ if(!S.logs.some(l=>l.type==='rest'))delete S.ach.rest;
+ save();toast('Режим плохого дня отменён.')},true)}
+
+function tasks(){
+ if(!S.start)return`<h1>Задания</h1><div class="card">Сначала заполни входной протокол во вкладке «Досье».</div>`;
+ const cnt=id=>S.logs.filter(l=>l.task===id).length;
+ return`<h1>Задания</h1>${qt(lineFrom('tasks_'+tod(),[],'tasks'))}
+ <button class="sos" onclick="openSos()">🆘 Не могу начать</button>
+ ${S.cats.map(c=>{const ts=S.tasks.filter(t=>t.cat===c.id);return`<div class="card"><h2>${ico(c.icon)} ${esc(c.name)}</h2>
+ ${ts.map(t=>{const L=LV[t.lvl];return`<div class="task"><span class="ti">${t.icon?ico(t.icon):L.e}</span><span class="n">${esc(t.name)}<br><span class="c ${L.c}">${L.n} · +${L.xp} XP${cnt(t.id)?' · ✓ '+cnt(t.id):''}</span></span><button class="sb" title="Название и сложность" aria-label="Название и сложность: ${esc(t.name)}" onclick="openLvl('${t.id}')">⇅</button><button class="sb" title="Начать" aria-label="Начать: ${esc(t.name)}" onclick="begin('${t.id}')">▶</button><button class="sb" title="Записать постфактум" aria-label="Записать постфактум: ${esc(t.name)}" onclick="openQuick('${t.id}')">✓</button></div>`}).join('')||'<p class="hint">Пока нет дел. Добавь своё.</p>'}
+ <button class="ghost" style="width:100%" onclick="openNewTask('${c.id}')">+ Добавить дело</button></div>`}).join('')}
+ <button style="width:100%" onclick="openNewCat()">+ Новая категория</button>
+ <p class="hint">⇅ — изменить название и сложность дела (сложность действует на новые записи). ▶ — начать дело с таймером. ✓ — дело уже сделано, записать постфактум.</p>`;
+}
+function begin(id){S.active={kind:'task',task:id,step:'go'};save()}
+function openQuick(id){S.active={kind:'quick',task:id};save()}
+function openNewTask(c){S.active={kind:'newtask',cat:c};save()}
+function openNewCat(){S.active={kind:'newcat'};save()}
+function openSos(){S.active={kind:'sos'};save()}
+function openLvl(id){S.active={kind:'lvl',task:id};save()}
+function closeAct(){S.active=null;save()}
+function cancelAct(){const A=S.active;if(A&&A.kind==='task'&&A.step!=='go')ask('Отменить дело? Запись не сохранится.','Отменить дело',closeAct,true);else closeAct()}
+function mkTask(name,c,lvl,icon){const t={id:uid(),name,cat:c,lvl,first:'',icon:icon||''};S.tasks.push(t);return t}
+function saveTask(){const n=val('tn');if(!n){toast('Напиши название дела');return}mkTask(n,val('tc'),lvVal(),val('ei'));S.active=null;save();toast('Дело добавлено')}
+function saveCat(){const n=val('cn');if(!n){toast('Напиши название категории');return}const c={id:uid(),name:n,icon:val('ci')||'📌'};S.cats.push(c);const tn=val('tn');if(tn)mkTask(tn,c.id,lvVal(),'');S.active=null;save();toast('Категория добавлена')}
+function saveLvl(){const t=task(S.active.task),v=lvVal(),n=val('tnm').slice(0,60);if(!t){S.active=null;save();return}
+ if(!n){toast('Название не может быть пустым');return}
+ const msgs=[];
+ if(n!==t.name){t.name=n;S.logs.forEach(l=>{if(l.task===t.id)l.tname=n});msgs.push('название')}
+ if(v!==t.lvl){S.lvlHist.push({ts:Date.now(),task:t.id,tname:t.name,from:t.lvl,to:v});t.lvl=v;msgs.push('сложность')}
+ S.active=null;save();toast(msgs.length?'Обновлено: '+msgs.join(' и '):'Без изменений')}
+
+function renderMission(){
+ const m=document.getElementById('mission'),A=S.active;m.hidden=!A;if(!A)return;
+ const cancel=A.kind==='lvl'?'':`<button class="ghost" style="width:100%;margin-top:8px" onclick="cancelAct()">Отмена</button>`;
+ let h='';const bad=()=>{S.active=null;m.hidden=true};
+ if(A.kind==='newtask')h=`<h1>Новое дело</h1><div class="card"><label for="tn">Название</label><input type="text" id="tn" maxlength="60"><label for="tc">Категория</label><select id="tc">${catOpts(A.cat)}</select><label>Сложность — насколько тяжело именно тебе</label>${lvPicker(2)}<label>Значок ${OPT}</label>${emoPicker('ei','')}<button class="pri" onclick="saveTask()">Добавить</button></div>`;
+ else if(A.kind==='newcat')h=`<h1>Новая категория</h1><div class="card"><label for="cn">Название</label><input type="text" id="cn" maxlength="40"><label>Значок ${OPT}</label>${emoPicker('ci','📌')}
+  <h2 style="margin-top:18px">Первое дело в ней ${OPT}</h2><label for="tn">Название дела</label><input type="text" id="tn" maxlength="60"><label>Сложность</label>${lvPicker(2)}<button class="pri" onclick="saveCat()">Создать</button></div>`;
+ else if(A.kind==='lvl'){const t=task(A.task);if(!t)return bad();h=`<h1>Дело</h1><div class="card"><label for="tnm">Название</label><input type="text" id="tnm" maxlength="60" value="${esc(t.name)}"><p class="hint">Новое название появится и в прошлых записях журнала.</p><label>Сложность</label>${lvPicker(t.lvl)}<p class="hint">Изменение сложности действует на новые записи. Прошлые остаются как были.</p><button class="pri" onclick="saveLvl()">Сохранить</button></div>`}
+ else if(A.kind==='quick'){const t=task(A.task);if(!t)return bad();h=`<p class="mono">ЗАПИСЬ ПОСТФАКТУМ</p><h1>${esc(t.name)}</h1><div class="card"><label for="mn">Сколько минут заняло дело?</label><input type="number" id="mn" min="1" max="600" inputmode="numeric" placeholder="минуты">
+  <label for="rs">Насколько не хотелось начинать?</label><p class="hint">0 — совсем не мешало, 10 — очень сильно не хотелось</p>${slider('rs',5,0,10)}
+  <label for="a">Самочувствие сейчас</label><p class="hint">1 — очень плохо, 10 — отлично</p>${slider('a',5,1,10)}
+  <label class="chk"><input type="checkbox" id="pt"> Сделано частично</label>
+  <label for="nt">Заметка ${OPT}</label><p class="hint">Сюда можно вписать то, что помогало или мешало, или что-то ещё.</p><textarea id="nt"></textarea><button class="pri" onclick="saveQuick()">Записать</button></div>`}
+ else if(A.kind==='sos'){
+  h=`<h1>Не могу начать</h1>${A.q||(A.q=qt(lineFrom('sos')))}<div class="card"><label for="st">С какого дела начнём?</label><select id="st">${S.cats.map(c=>`<optgroup label="${esc(icTxt(c.icon)+' '+c.name)}">${S.tasks.filter(t=>t.cat===c.id).map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join('')}</optgroup>`).join('')}</select>
+   <label for="sm">Самое маленькое действие ${OPT}</label><input type="text" id="sm" maxlength="120" placeholder="например: просто взять в руки"><p class="hint">Не решай, будешь ли делать всё. Запусти дело — таймер пойдёт от нуля, а закончишь, когда сможешь или когда решишь остановиться.</p><button class="pri" onclick="sosGo()">▶ Запустить дело</button></div>`;
+ }
+ else if(A.kind==='task'){
+  const t=task(A.task);if(!t)return bad();const L=LV[t.lvl];
+  const head=`<p class="mono">ЗАДАНИЕ · ${L.e} ${L.n.toUpperCase()}</p><h1>${t.icon?ico(t.icon):''} ${esc(t.name)}</h1>`;
+  if(A.step==='go'){if(!A.q)A.q=qt(startLine(t));h=head+`${A.q}<div class="card neon"><h2>Первый шаг — прямо сейчас</h2><label for="fs">Одно маленькое действие, с которого начнёшь ${OPT}</label>
+   <input type="text" id="fs" class="first" maxlength="120" placeholder="например: ${esc(t.first||'сделать первое движение')}"><p class="hint">Не решай, будешь ли делать всё дело. Сделай только этот шаг.</p>
+   <label for="lec">Что на фоне: трек, лекция ${OPT}</label><input type="text" id="lec" maxlength="120">
+   <label for="wn">Насколько хочется начать это дело?</label><p class="hint">1 — совсем не хочется, 10 — очень хочется</p>${slider('wn',5,1,10)}
+   <button class="pri" onclick="goRun()">▶ Начинаю</button></div>`}
+  if(A.step==='run'){if(!A.q)A.q=qt(lineFrom('run'));h=head+`<div class="timer" id="tm">00:00</div>${A.q}${A.first?`<div class="first">Шаг 1: ${esc(A.first)}</div>`:''}${A.lecture?`<p class="hint">На фоне: ${esc(A.lecture)}</p>`:''}<button class="pri" onclick="S.active.min=Math.max(1,Math.round((Date.now()-S.active.startTs)/6e4));S.active.step='after';save()">■ Закончила / остановилась</button>`}
+  if(A.step==='after')h=head+`<div class="card"><label for="rs">Насколько не хотелось начинать?</label><p class="hint">0 — совсем не мешало, 10 — очень сильно не хотелось</p>${slider('rs',5,0,10)}
+   <label for="a">Самочувствие сейчас</label><p class="hint">1 — очень плохо, 10 — отлично</p>${slider('a',5,1,10)}
+   <label>Дело доведено до конца?</label><label class="chk"><input type="radio" name="dn" value="1" checked> Да, полностью</label><label class="chk"><input type="radio" name="dn" value="0"> Частично / пришлось прерваться</label>
+   <label>Что мешало? ${OPT}</label>${INTR.map((s,i)=>`<label class="chk"><input type="checkbox" name="in" value="${i}"> ${s}</label>`).join('')}
+   <label for="nt">Заметка ${OPT}</label><p class="hint">Сюда можно вписать то, что помогало или мешало, или что-то ещё.</p><textarea id="nt"></textarea>
+   <button class="pri" onclick="finish()">Записать в протокол</button></div>`;
+ }
+ document.getElementById('mbody').innerHTML=h+cancel;
+}
+function goRun(){const A=S.active;A.first=val('fs');A.lecture=val('lec');A.want=+val('wn');A.startTs=Date.now();A.step='run';A.q='';save()}
+function mkLog(t,o){const c=cat(t.cat)||{name:'—'};return Object.assign({id:Date.now(),ts:Date.now(),type:'task',task:t.id,tname:t.name,cat:t.cat,cname:c.name,lvl:t.lvl,min:0,want:null,resist:null,after:null,done:true,intr:[],note:'',lecture:'',first:'',quick:false},o)}
+function pushLog(l){const tb=total(),rb=rank(tb);S.logs.push(l);S.active=null;tab='dossier';XPM=xpMap();const ra=rank(total());const a=save({hold:true});
+ const x=xpOf(l),why=WHY[l.id]||'',td=S.logs.filter(z=>dayKey(z.ts)===dayKey(l.ts)).length;
+ let h=`<h2>Записано</h2><div class="bigxp">+${x} XP</div>${why?`<p class="hint">${esc(why)}</p>`:''}${qt(l.done?fullLine(l):lineFrom('part'))}`;
+ if(why.includes('лимит'))h+=qt(lineFrom('cap'));
+ if(td===1&&streak()>=3)h+=qt(lineFrom('streak'));
+ if(ra!==rb)h+=`<h3>⭐ Новое звание: ${esc(ra)}</h3>${qt(lineFrom('rankup'))}`;
+ h+=achBlock(a)+`<button class="pri" onclick="closeModal()">Ок</button>`;modal(h)}
+function finish(){const A=S.active,t=task(A.task);
+ pushLog(mkLog(t,{ts:A.startTs||Date.now(),min:A.min||0,want:A.want??null,resist:+val('rs'),after:+val('a'),done:document.querySelector('[name=dn]:checked').value==='1',intr:[...document.querySelectorAll('[name=in]:checked')].map(c=>INTR[c.value]),note:val('nt'),lecture:A.lecture||'',first:A.first||''}))}
+function saveQuick(){const t=task(S.active.task),mn=+val('mn');if(!(mn>=1)){toast('Укажи, сколько минут заняло дело');return}
+ pushLog(mkLog(t,{ts:Date.now()-mn*6e4,resist:+val('rs'),after:+val('a'),min:mn,done:!document.getElementById('pt').checked,note:val('nt'),quick:true}))}
+function sosGo(){const id=document.getElementById('st').value;if(!id){toast('Сначала добавь хотя бы одно дело');return}
+ const first=val('sm');S.sos.push({ts:Date.now(),task:id,started:true});
+ S.active={kind:'task',task:id,step:'run',first,lecture:'',want:null,startTs:Date.now(),sos:true,q:qt(lineFrom('sosyes'))};save()}
+setInterval(()=>{const e=document.getElementById('tm'),A=S.active;if(!e||!A||A.kind!=='task'||!A.startTs)return;
+ const s=Math.floor((Date.now()-A.startTs)/1e3);e.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')},1000);
+
+function statsOf(L){const m=k=>L.map(l=>l[k]).filter(v=>v!=null&&v!==''&&!isNaN(v));
+ return{n:L.length,full:L.length?Math.round(L.filter(l=>l.done).length/L.length*100):0,res:avg(m('resist')),resN:m('resist').length,aft:avg(m('after')),aftN:m('after').length,wnt:avg(m('want')),wntN:m('want').length,min:L.reduce((s,l)=>s+(l.min||0),0),days:new Set(L.map(l=>dayKey(l.ts))).size}}
+const stats=()=>statsOf(real());
+function journal(){
+ const tabs=[['logs','Дела'],['hist','История'],['diary','Дневник']];if(S.pro)tabs.push(['pro','Пролог']);
+ if(jtab==='pro'&&!S.pro)jtab='logs';
+ const sw=`<div class="row" style="margin-bottom:12px">${tabs.map(t=>`<button class="${jtab===t[0]?'sel':''}" onclick="jtab='${t[0]}';render()">${t[1]}</button>`).join('')}</div>`;
+ return`<h1>Журнал</h1>${sw}${({logs:logsView,hist:history,diary,pro:proView})[jtab]()}`;
+}
+function statsCard(s){return`<div class="card"><div class="stats"><div><b>${s.n}</b>дел записано</div><div><b>${s.days}</b>дней с записями</div><div><b>${s.full}%</b>доведено до конца</div><div><b>${s.min}</b>минут всего</div><div><b>${s.wntN?s.wnt.toFixed(1):'—'}</b>среднее «хочется начать» до дела (1–10)</div><div><b>${s.resN?s.res.toFixed(1):'—'}</b>среднее «не хотелось начинать» после (0–10)</div><div><b>${s.aftN?s.aft.toFixed(1):'—'}</b>среднее самочувствие после</div></div></div>`}
+function logsView(){
+ if(!S.logs.length)return`<div class="card">Пока пусто. Первое дело — во вкладке «Задания».</div>`;
+ return statsCard(stats())+`<div class="card" style="overflow-x:auto"><table><tr><th>Когда</th><th>Дело</th><th>Оценки</th><th>Заметки</th></tr>
+ ${[...S.logs].sort((a,b)=>b.ts-a.ts).map(l=>l.type==='rest'?`<tr><td>${fmt(l.ts)}<br><span class="hint">+${xpOf(l)} XP</span></td><td>🌙 Режим восстановления</td><td>—</td><td>—</td></tr>`:
+ `<tr><td>${fmt(l.ts)}<br><span class="hint">${l.min||0} мин · +${xpOf(l)} XP${WHY[l.id]?'<br>'+esc(WHY[l.id]):''}</span></td><td>${LV[l.lvl].e} ${esc(l.tname)}${l.done?'':' <span class="hint">(частично)</span>'}<br><span class="hint">${esc(l.cname)}</span>${l.lecture?`<br><span class="hint">🎧 ${esc(l.lecture)}</span>`:''}</td><td>${l.want!=null?`хотелось начать: <b>${l.want}</b><br>`:''}${l.resist!=null?`не хотелось (после): <b>${l.resist}</b><br>`:''}${l.after!=null?`самочувствие: <b>${l.after}</b>`:''}</td><td>${esc((l.intr||[]).join('; '))||'—'}${l.note?`<br><span class="hint">${esc(l.note)}</span>`:''}</td></tr>`).join('')}
+ </table></div>`;
+}
+function history(){
+ if(!S.logs.length&&!S.sos.length)return`<div class="card">История появится после первого дела.</div>`;
+ const by={};S.logs.forEach(l=>(by[dayKey(l.ts)]??=[]).push(l));
+ const sosBy={};S.sos.forEach(x=>(sosBy[dayKey(x.ts)]??=[]).push(x));
+ const achBy={};ACH.forEach(a=>{if(S.ach[a.id])(achBy[dayKey(S.ach[a.id])]??=[]).push(a)});
+ const dxp=k=>(by[k]||[]).reduce((s,l)=>s+xpOf(l),0)+(achBy[k]||[]).reduce((s,a)=>s+a.xp,0);
+ const keys=[...new Set([...Object.keys(by),...Object.keys(sosBy),...Object.keys(achBy)])].sort().reverse();
+ const bars=[...Array(14)].map((_,i)=>dayKey(Date.now()-(13-i)*864e5));const mx=Math.max(1,...bars.map(dxp));
+ const lab=`<div class="sparkl">${bars.map(k=>`<span>${k.slice(8)}</span>`).join('')}</div>`;
+ const avgBy=(k,key)=>{const a=(by[k]||[]).filter(l=>l.type!=='rest'&&l[key]!=null&&!isNaN(l[key])).map(l=>+l[key]);return a.length?avg(a):null};
+ const chart=(title,key,cls,hint)=>`<div class="card"><h2>${title}</h2><div class="spark">${bars.map(k=>{const v=avgBy(k,key);return`<i class="${v==null?'z':cls}" style="height:${v==null?3:Math.max(10,v/10*100)}%" title="${ruDate(k)}: ${v==null?'нет данных':v.toFixed(1)}">${v==null?'':`<b>${v.toFixed(1)}</b>`}</i>`}).join('')}</div>${lab}<p class="hint">${hint}</p></div>`;
+ const spark=`<div class="card"><h2>Опыт за последние 14 дней</h2><div class="spark">${bars.map(k=>`<i class="${dxp(k)?'':'z'}" style="height:${dxp(k)?Math.max(8,dxp(k)/mx*100):3}%" title="${ruDate(k)}: ${dxp(k)} XP"></i>`).join('')}</div>${lab}<p class="hint">Высота столбика — опыт за день.</p></div>`
+  +chart('Насколько тяжело было начинать','resist','r','Среднее за день по ответам «насколько не хотелось начинать» (0–10). Чем выше столбик, тем тяжелее было.')
+  +chart('Насколько легко было после','after','g','Среднее за день по самочувствию после дела (1–10). Чем выше столбик, тем лучше она себя чувствовала.');
+ const dn=k=>new Date(k+'T12:00').toLocaleDateString('ru',{weekday:'short',day:'numeric',month:'long'});
+ const tic=l=>{const t=task(l.task);return t&&t.icon?ico(t.icon):LV[l.lvl].e};
+ const cards=keys.map(k=>{const L=(by[k]||[]).sort((a,b)=>a.ts-b.ts),mins=L.reduce((s,l)=>s+(l.min||0),0),n=L.filter(l=>l.type!=='rest').length;
+  return`<div class="card"><div class="rowl" style="border:0;padding:0"><b>${esc(dn(k))}</b><span class="hint">день ${dayOf(new Date(k+'T12:00').getTime())} · ${n} дел${mins?' · '+mins+' мин':''} · +${dxp(k)} XP</span></div>
+  ${L.map(l=>l.type==='rest'?`<div class="hl"><span class="e">🌙</span><span>Режим восстановления</span></div>`:`<div class="hl"><span class="e">${tic(l)}</span><span><b>${esc(l.tname)}</b> <span class="hint">${esc(l.cname)} · ${LV[l.lvl].n}${l.done?'':' · частично'}</span><br><span class="hint">${new Date(l.ts).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'})} · ${l.min||0} мин · +${xpOf(l)} XP${l.want!=null?' · хотелось начать: '+l.want:''}${l.resist!=null?' · не хотелось (после): '+l.resist:''}${l.after!=null?' · самочувствие: '+l.after:''}</span>${l.note?`<br><span class="hint">📝 ${esc(l.note)}</span>`:''}</span></div>`).join('')}
+  ${(sosBy[k]||[]).map(x=>`<div class="hl"><span class="e">🆘</span><span>«Не могу начать»: дело запущено</span></div>`).join('')}
+  ${(achBy[k]||[]).map(a=>`<div class="hl"><span class="e">🏆</span><span><b>${esc(a.n)}</b> <span class="hint">+${a.xp} XP</span></span></div>`).join('')}</div>`}).join('');
+ return spark+cards}
+function diary(){const L=[...S.diary].sort((a,b)=>b.ts-a.ts);
+ return`<div class="card"><h2>Новая запись</h2><p class="hint">Пиши что угодно: мысли, как прошёл день, что получилось, а что нет. Записи остаются в приложении, и ты можешь перечитать их здесь.</p>
+ <label for="dt">Запись</label><textarea id="dt" style="min-height:120px"></textarea>
+ <label class="chk"><input type="checkbox" id="dsh" checked> Включить в отчёт для психолога</label><p class="hint">Если снять галочку, запись останется только в приложении и не попадёт в отчёт.</p>
+ <button class="pri" onclick="addDiary()">Сохранить запись</button></div>
+ ${L.map(d=>`<div class="card"><div class="rowl" style="border:0;padding:0"><span class="mono">${fmt(d.ts)} · ${d.share?'в отчёте':'только для меня'}</span><button class="x" aria-label="Удалить запись дневника" onclick="delDiary('${d.id}')">🗑</button></div><p style="white-space:pre-wrap;margin:6px 0 0">${esc(d.text)}</p></div>`).join('')||'<p class="hint">Записей пока нет.</p>'}`}
+function addDiary(){const t=val('dt');if(!t){toast('Сначала напиши текст записи');return}S.diary.push({id:uid(),ts:Date.now(),text:t,share:document.getElementById('dsh').checked});save();toast('Запись сохранена')}
+function delDiary(id){ask('Удалить запись дневника? Её можно будет вернуть из корзины.','Удалить',()=>{const d=S.diary.find(x=>x.id===id);if(!d)return;S.diary=S.diary.filter(x=>x.id!==id);S.trash.push({id:uid(),kind:'diary',ts:Date.now(),data:d});save();toast('Удалено. Вернуть можно в «Ещё» → «Корзина».')},true)}
+function proView(){const P=S.pro;if(!P)return'';const s=statsOf(P.logs);
+ return`<div class="card neon"><h2>Пролог: пробная неделя</h2>${proText()}${P.start&&P.end?`<p class="hint">Лёгкость скучных дел: ${P.start.ease} → ${P.end.ease} из 10.</p>`:''}</div>${statsCard(s)}
+ <div class="card" style="overflow-x:auto"><table><tr><th>Когда</th><th>Дело</th><th>Оценки</th><th>Заметки</th></tr>
+ ${[...P.logs].sort((a,b)=>b.ts-a.ts).map(l=>`<tr><td>${fmt(l.ts)}<br><span class="hint">${l.min||0} мин</span></td><td>${esc(l.tname)}${l.done?'':' <span class="hint">(частично)</span>'}${l.lecture?`<br><span class="hint">🎧 ${esc(l.lecture)}</span>`:''}</td><td>${l.before!=null?`<b>${l.before}→${l.after}</b>`:''}${l.bw?`<br><span class="hint">${esc(l.bw)}</span>`:''}</td><td>${esc((l.intr||[]).join('; '))||'—'}${l.note?`<br><span class="hint">${esc(l.note)}</span>`:''}</td></tr>`).join('')}
+ </table></div>`}
+
+function endState(){const x=total(),cs=new Set(real().map(l=>l.cat)).size,d=days().size,n=dayN();
+ let id=null;if(x>=GOAL){id=1;if(cs>=NEED_CATS){id=2;if(d>=NEED_DAYS)id=3}}else if(n>QDAYS)id=0;return{x,cs,d,n,id}}
+function catsDone(){const ids=[...new Set(real().map(l=>l.cat))];return ids.map(id=>(cat(id)||{name:(real().find(l=>l.cat===id)||{}).cname||'—'}).name).join(', ')}
+function final(){
+ if(!S.start)return`<h1>Финал</h1><div class="card">Сначала начни смену во вкладке «Досье».</div>`;
+ const E=S.end||{},q=v=>E.quar===v?'checked':'',es=endState(),has=!!S.end;
+ const g=(ok,t)=>`<div class="goal ${ok?'ok':''}">${ok?'★':'☆'} ${t}</div>`;
+ let endCard='';if(es.id!==null){const e=ENDS[es.id],s=stats(),cd=catsDone();
+  const lines=e[1].map(r=>[r[0],r[1].replace('{cats}',cd)]);
+  endCard=`<div class="card neon"><h2>Концовка: ${e[0]}</h2>${lines.map(qt).join('')}
+  <p class="hint">Итоги смены: ${s.n} дел, ${s.min} мин, ${s.days} дн. с записями, ${es.cs} направл., достижений: ${ACH.filter(a=>S.ach[a.id]).length} из ${ACH.length}.</p>${es.id===0?'<p class="hint">Прогресс сохранён, смену можно продолжать.</p>':'<p class="hint">Можно продолжать дальше — записи сохраняются.</p>'}</div>`}
+ return`<h1>Финал смены</h1><p class="mono">ДЕНЬ ${Math.max(1,es.n)} ИЗ ${QDAYS}</p>${qt(lineFrom('final'))}
+ <div class="card"><h2>Условия концовок</h2>${g(es.x>=GOAL,`Опыт: ${es.x} / ${GOAL} — «Протокол закрыт»`)}${g(es.cs>=NEED_CATS,`Направления: ${es.cs} / ${NEED_CATS} — «Допуск расширен»`)}${g(es.d>=NEED_DAYS,`Дни с записями: ${es.d} / ${NEED_DAYS} — «Своя смена»`)}<p class="hint">Плохой концовки нет. Если порог за ${QDAYS} дней не набран, смена просто продлевается.</p></div>${endCard}
+ <div class="card"><h2>Финальный рапорт</h2><p class="hint">Все вопросы обязательны, кроме заметок в конце.</p>
+ <label for="fe">Насколько просто тебе теперь справляться со скучными делами? <span class="red">*</span></label><p class="hint">Лёгкость выполнения дел. 0 — совсем никак, 10 — легко. На старте было: <b>${S.start.ease}</b></p>${slider('fe',E.ease??S.start.ease,0,10,!has)}
+ <label for="fn">Как ты себя чувствуешь в целом? <span class="red">*</span></label><p class="hint">Общее самочувствие. 1 — очень плохо, 10 — отлично</p>${slider('fn',E.now??5,1,10,!has)}
+ <label for="f6">Что ты думаешь об этом эксперименте? <span class="red">*</span></label><p class="hint">Что понравилось, что нет, что было лишним, что бы ты изменила. Пиши как есть.</p><textarea id="f6" style="min-height:110px">${esc(E.exp)}</textarea>
+ <h2 style="margin-top:18px">Дома</h2>
+ <label for="f1">Изменилось ли что-то в отношении родителей к тебе? Если да — что именно? <span class="red">*</span></label><textarea id="f1">${esc(E.att)}</textarea>
+ <label for="f2">Как ты себя чувствуешь в отношениях с ними? <span class="red">*</span></label><textarea id="f2">${esc(E.feel)}</textarea>
+ <label>Ссор стало… <span class="red">*</span></label>${['меньше','так же','больше'].map(v=>`<label class="chk"><input type="radio" name="fq" value="${v}" ${q(v)}> ${v}</label>`).join('')}
+ <label for="f3">Как ты теперь реагируешь на слова, которые раньше раздражали? <span class="red">*</span></label><textarea id="f3">${esc(E.words)}</textarea>
+ <label for="f4">Что помогало больше всего? Что мешало? <span class="red">*</span></label><textarea id="f4">${esc(E.note)}</textarea>
+ <label for="f5">Заметки ${OPT}</label><p class="hint">Сюда можно вписать всё, что не вошло в вопросы выше.</p><textarea id="f5">${esc(E.extra)}</textarea>
+ <button class="pri" onclick="saveEnd()">${has?'Обновить рапорт':'Сдать рапорт'}</button></div>
+ ${has?`<div class="card neon"><h2>Итог</h2><p>Лёгкость скучных дел: <b>${S.start.ease} → ${S.end.ease}</b> (${S.end.ease-S.start.ease>=0?'+':''}${S.end.ease-S.start.ease})</p><p>Самочувствие в финале: <b>${S.end.now??'—'}</b>/10</p></div>`:''}`;
+}
+function saveEnd(){const miss=[];
+ if(document.getElementById('fe').dataset.t!=='1')miss.push('лёгкость выполнения дел (ползунок)');
+ if(document.getElementById('fn').dataset.t!=='1')miss.push('общее самочувствие (ползунок)');
+ [['f6','мысли об эксперименте'],['f1','отношение родителей'],['f2','отношения с ними'],['f3','реакция на слова'],['f4','что помогало и мешало']].forEach(p=>{if(!val(p[0]))miss.push(p[1])});
+ const q=document.querySelector('[name=fq]:checked');if(!q)miss.push('ссоры');
+ if(miss.length){toast('Заполни обязательные поля: '+miss.join(', '),9000);return}
+ S.end={date:dayKey(Date.now()),ease:+val('fe'),now:+val('fn'),exp:val('f6'),att:val('f1'),feel:val('f2'),quar:q.value,words:val('f3'),note:val('f4'),extra:val('f5')};save();toast('Рапорт принят.')}
+
+function more(){
+ const cs=S.cats.map(c=>{const ts=S.tasks.filter(t=>t.cat===c.id);return`<div class="card"><div class="row"><h2 style="flex:3;margin:0">${ico(c.icon)} ${esc(c.name)}</h2><button onclick="renameCat('${c.id}')" aria-label="Переименовать категорию">✎</button><button class="${c.locked?'sel':''}" onclick="lockCat('${c.id}')" title="${c.locked?'Снять защиту от удаления':'Защитить от удаления'}" aria-label="${c.locked?'Снять защиту от удаления':'Защитить от удаления'}">${c.locked?'🔒':'🔓'}</button><button onclick="delCat('${c.id}')" ${c.locked?'disabled':''} title="${c.locked?'Категория защищена от удаления':'Удалить категорию'}" aria-label="Удалить категорию">🗑</button></div>
+ ${c.locked?'<p class="hint">🔒 Категория защищена от удаления. Нажми замок ещё раз, чтобы снять защиту.</p>':''}
+ ${ts.map(t=>`<div class="rowl"><span>${t.icon?ico(t.icon):LV[t.lvl].e} ${esc(t.name)} <span class="hint">${LV[t.lvl].n}</span></span><span><button class="x" onclick="openLvl('${t.id}')" aria-label="Название и сложность">⇅</button><button class="x" onclick="delTask('${t.id}')" aria-label="Удалить дело">🗑</button></span></div>`).join('')||'<p class="hint">Пока нет дел</p>'}</div>`}).join('');
+ const cl=S.lines.map((x,i)=>`<div class="rowl"><span><b>${who(x.who)}</b> · <span class="hint">${esc(CTXN[x.ctx]||x.ctx)}</span><br>${esc(x.text)}</span><button class="x" onclick="delLine(${i})" aria-label="Удалить реплику">🗑</button></div>`).join('')||'<p class="hint">Своих реплик пока нет.</p>';
+ const KN={log:'Запись о деле',task:'Дело',cat:'Категория',diary:'Запись дневника'};
+ const tr=[...S.trash].sort((a,b)=>b.ts-a.ts).map(t=>{const d=t.data;const nm=t.kind==='log'?(d.tname||'—')+' · '+fmt(d.ts):t.kind==='task'?d.name:t.kind==='cat'?d.cat.name+' ('+d.tasks.length+' дел)':d.text.slice(0,40);return`<div class="rowl"><span><span class="hint">${KN[t.kind]}</span><br>${esc(nm)}</span><span><button onclick="restore('${t.id}')">Вернуть</button><button class="x" onclick="purge('${t.id}')" aria-label="Удалить навсегда">✕</button></span></div>`}).join('')||'<p class="hint">Корзина пуста.</p>';
+ return`<h1>Ещё</h1><h2>Категории и дела</h2><p class="hint">⇅ у дела — изменить название и сложность. 🔓/🔒 у категории — защита от удаления.</p>${cs}<div class="row"><button onclick="openNewCat()">+ Категория</button><button onclick="openNewTask('${S.cats[0]?S.cats[0].id:''}')">+ Дело</button></div>
+ <h2 style="margin-top:22px">Реплики</h2><div class="card"><h3>Добавить свою реплику</h3><label for="lc">Когда звучит</label><select id="lc">${Object.keys(CTXN).map(k=>`<option value="${k}">${CTXN[k]}</option>`).join('')}</select><label for="lw">Кто говорит</label><select id="lw"><option value="v">Инспектор Войд</option><option value="k">Кавински</option></select><label for="lt">Текст</label><input type="text" id="lt" maxlength="200"><button class="pri" onclick="addLine()">Добавить</button><h3 style="margin-top:16px">Твои реплики</h3>${cl}</div>
+ <h2 style="margin-top:22px">Корзина</h2><div class="card">${tr}</div>
+ <h2 style="margin-top:22px">Данные</h2><div class="card"><p class="hint">Данные хранятся только в этом браузере. Скачай копию, особенно перед сменой телефона или очисткой браузера.${S.lastBackup?' Последняя копия: '+fmt(S.lastBackup)+'.':''}</p>
+ <div class="row"><button onclick="doExport('json')">⬇ Копия (JSON)</button><button onclick="doExport('csv')">⬇ Таблица (CSV)</button><button onclick="doExport('txt')">⬇ Отчёт (TXT)</button></div>
+ <p class="hint">Если файл не скачался, после нажатия появятся кнопки «Поделиться», «Скопировать текст» и «Показать текст».</p>
+ <label for="imp">Загрузить копию (JSON)</label><input type="file" id="imp" accept=".json,application/json" onchange="imp(this)">
+ <button class="danger" style="width:100%;margin-top:16px" onclick="resetAll()">Стереть все данные</button></div>`;
+}
+function renameCat(id){const c=cat(id);modalCb=()=>{const n=val('mv');if(n){c.name=n.slice(0,40);S.logs.forEach(l=>{if(l.cat===id)l.cname=c.name});save()}};
+ modal(`<h2>Название категории</h2><input type="text" id="mv" maxlength="40" value="${esc(c.name)}"><div class="row" style="margin-top:12px"><button onclick="closeModal()">Отмена</button><button class="pri" style="margin:0;width:auto" onclick="modalOk()">Сохранить</button></div>`)}
+function lockCat(id){const c=cat(id);if(!c)return;c.locked=!c.locked;save();toast(c.locked?'Категория защищена от удаления.':'Защита снята, категорию можно удалить.')}
+function delCat(id){const c=cat(id);if(!c)return;if(c.locked){toast('Категория защищена от удаления. Нажми замок 🔒, чтобы снять защиту.');return}
+ const ts=S.tasks.filter(t=>t.cat===id);
+ ask(ts.length?`Удалить категорию «${c.name}» вместе с делами (${ts.length})? Записи в журнале сохранятся. Всё можно вернуть из корзины.`:`Удалить категорию «${c.name}»? Её можно будет вернуть из корзины.`,'Удалить',()=>{
+  S.trash.push({id:uid(),kind:'cat',ts:Date.now(),data:{cat:c,tasks:ts}});S.tasks=S.tasks.filter(t=>t.cat!==id);S.cats=S.cats.filter(x=>x.id!==id);save();toast('Удалено. Вернуть можно в корзине.')},true)}
+function delTask(id){const t=task(id);ask(`Удалить дело «${t.name}» из списка? Записи в журнале сохранятся. Дело можно вернуть из корзины.`,'Удалить',()=>{
+ S.trash.push({id:uid(),kind:'task',ts:Date.now(),data:t});S.tasks=S.tasks.filter(x=>x.id!==id);save();toast('Удалено. Вернуть можно в корзине.')},true)}
+function restore(id){const t=S.trash.find(x=>x.id===id);if(!t)return;
+ if(t.kind==='log')S.logs.push(t.data);
+ if(t.kind==='diary')S.diary.push(t.data);
+ if(t.kind==='cat'){if(!cat(t.data.cat.id))S.cats.push(t.data.cat);t.data.tasks.forEach(x=>{if(!task(x.id))S.tasks.push(x)})}
+ if(t.kind==='task'){if(!cat(t.data.cat))S.cats.push({id:t.data.cat,name:'Восстановленная категория',icon:'📌'});if(!task(t.data.id))S.tasks.push(t.data)}
+ S.trash=S.trash.filter(x=>x.id!==id);save();toast('Возвращено')}
+function purge(id){ask('Удалить навсегда? Вернуть будет нельзя.','Удалить навсегда',()=>{S.trash=S.trash.filter(x=>x.id!==id);save()},true)}
+function addLine(){const t=val('lt');if(!t){toast('Напиши текст реплики');return}S.lines.push({ctx:val('lc'),who:val('lw'),text:t});save();toast('Реплика добавлена')}
+function delLine(i){S.lines.splice(i,1);save()}
+
+function logLine(l){const t=new Date(l.ts).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'});
+ if(l.type==='rest')return`• ${t} — режим восстановления.`;
+ return`• ${t} — [${l.cname}] ${l.tname} (${LV[l.lvl].n}), ${l.min||0} мин.${l.want!=null?' Хотелось начать (до): '+l.want+'/10.':''}${l.resist!=null?' Не хотелось начинать (после): '+l.resist+'/10.':''}${l.before!=null?' Самочувствие '+l.before+' → '+l.after+'.':(l.after!=null?' Самочувствие после: '+l.after+'.':'')} ${l.done?'Полностью':'Частично'}.${l.quick?' (запись постфактум)':''}${l.first?' Первый шаг: '+l.first+'.':''}${l.lecture?' Фон: '+l.lecture+'.':''}${(l.intr||[]).length?' Помехи: '+l.intr.join('; ')+'.':''}${l.note?' '+l.note:''}`}
+function dayLines(logs,base){const by={};logs.forEach(l=>(by[dayKey(l.ts)]??=[]).push(l));const r=[];
+ Object.keys(by).sort().forEach(k=>{r.push('',`ДЕНЬ ${Math.round((new Date(k)-new Date(base))/864e5)+1} — ${ruDate(k)} (записей: ${by[k].length})`);by[k].sort((a,b)=>a.ts-b.ts).forEach(l=>r.push(logLine(l)))});return r}
+function report(){
+ const s=stats(),E=S.end,r=[`ПРОТОКОЛ НАБЛЮДЕНИЯ — «Дела без прокрастинации»`,`Наблюдатель: ${S.name||'—'}`,''];
+ if(S.pro){const P=S.pro,ps=statsOf(P.logs);r.push('ПРОЛОГ (пробная неделя, вне зачёта смены):',`Дел: ${ps.n}, дней: ${ps.days}, минут: ${ps.min}, доведено до конца: ${ps.full}%.`);
+  if(P.start)r.push(`Старт: ${ruDate(P.start.date)}, лёгкость скучных дел ${P.start.ease}/10.${P.start.note?' '+P.start.note:''}`);
+  r.push(...dayLines(P.logs,P.start?P.start.date:dayKey(P.logs[0].ts)));
+  if(P.end)r.push('',`Финал пролога: лёгкость ${P.end.ease}/10. Родители: ${P.end.att||'—'}. С родителями: ${P.end.feel||'—'}. Ссор: ${P.end.quar||'—'}. Слова: ${P.end.words||'—'}. Помогало/мешало: ${P.end.note||'—'}.`);
+  r.push('','========== СМЕНА ==========','')}
+ if(S.start)r.push(`Старт: ${ruDate(S.start.date)}. Лёгкость скучных дел: ${S.start.ease}/10.${S.start.note?' '+S.start.note:''}`);
+ r.push(...dayLines(S.logs,baseDate()));
+ if(s.n)r.push('',`ИТОГО: ${s.n} дел за ${s.days} дн. Доведено до конца: ${s.full}%. Всего ${s.min} мин.${s.wntN?' Среднее «хочется начать» до дела: '+s.wnt.toFixed(1)+'/10.':''}${s.resN?' Среднее «не хотелось начинать» после: '+s.res.toFixed(1)+'/10.':''}${s.aftN?' Среднее самочувствие после: '+s.aft.toFixed(1)+'.':''}`);
+ const sosN=S.sos.length;if(sosN)r.push(`Кнопка «не могу начать»: запускала ${sosN} раз(а).`);
+ if(S.lvlHist.length)r.push('','СМЕНЫ СЛОЖНОСТИ:',...S.lvlHist.map(h=>`• ${ruDate(dayKey(h.ts))} — ${h.tname}: ${LV[h.from].n} → ${LV[h.to].n}`));
+ const got=ACH.filter(a=>S.ach[a.id]);if(got.length)r.push('','ДОСТИЖЕНИЯ: '+got.map(a=>a.n).join(', '));
+ const dr=[...S.diary].filter(d=>d.share).sort((a,b)=>a.ts-b.ts);if(dr.length)r.push('','ДНЕВНИК:',...dr.map(d=>`• ${fmt(d.ts)} — ${d.text.replace(/\n+/g,' ')}`));
+ if(E&&S.start)r.push('','ФИНАЛ:',`Лёгкость выполнения дел: ${S.start.ease} → ${E.ease}/10`,`Общее самочувствие в финале: ${E.now??'—'}/10`,`Мысли об эксперименте: ${E.exp||'—'}`,`Отношение родителей: ${E.att||'—'}`,`Самочувствие с родителями: ${E.feel||'—'}`,`Ссор: ${E.quar||'—'}`,`Реакция на раздражавшие слова: ${E.words||'—'}`,`Помогало/мешало: ${E.note||'—'}`,`Заметки: ${E.extra||'—'}`);
+ return r.join('\n');
+}
+function csv(){const H=['фаза','дата','время','день_смены','тип','категория','дело','сложность','минуты','хочется_начать_до_1_10','не_хотелось_начинать_после_0_10','самочувствие_до','самочувствие_после','выполнено','помехи','первый_шаг','фон','заметка','запись_постфактум','xp'];
+ const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';const tm=l=>new Date(l.ts).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'});
+ const pro=(S.pro?S.pro.logs:[]).map(l=>['пролог',dayKey(l.ts),tm(l),'','task',l.cname,l.tname,LV[l.lvl].n,l.min||0,'','',l.before??'',l.after??'',l.done?1:0,(l.intr||[]).join(' | '),l.first,l.lecture,l.note,0,''].map(q).join(';'));
+ const rows=[...S.logs].sort((a,b)=>a.ts-b.ts).map(l=>['смена',dayKey(l.ts),tm(l),dayOf(l.ts),l.type||'task',l.cname,l.tname,l.lvl?LV[l.lvl].n:'',l.min||0,l.want??'',l.resist??'',l.before??'',l.after??'',l.done?1:0,(l.intr||[]).join(' | '),l.first,l.lecture,l.note,l.quick?1:0,xpOf(l)].map(q).join(';'));
+ return'\uFEFF'+[H.map(q).join(';'),...pro,...rows].join('\r\n')}
+
+function triggerDownload(name,text,type){try{const blob=new Blob([text],{type:type+';charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;a.rel='noopener';a.style.display='none';document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(url)},60000);return true}catch(e){return false}}
+function fallbackButtons(){return`<button class="pri" onclick="shareExport()">📤 Поделиться / сохранить</button><button style="width:100%;margin-top:8px" onclick="copyExport()">📋 Скопировать текст</button><button style="width:100%;margin-top:8px" onclick="showExport()">👁 Показать текст</button>`}
+function deliver(name,text,type){lastExport={name,text,type};triggerDownload(name,text,type);
+ modal(`<h2>${esc(name)}</h2><p class="hint">Файл должен скачаться сам. Если этого не произошло (например, страница открыта внутри Telegram), используй кнопки ниже.</p>${fallbackButtons()}<button class="ghost" style="width:100%;margin-top:8px" onclick="closeModal()">Закрыть</button>`)}
+async function shareExport(){const e=lastExport;if(!e)return;
+ try{const f=new File([e.text],e.name,{type:e.type});if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:e.name});return}}catch(err){if(err&&err.name==='AbortError')return}
+ try{if(navigator.share){await navigator.share({title:e.name,text:e.text});return}}catch(err){if(err&&err.name==='AbortError')return}
+ toast('Поделиться не получилось. Нажми «Скопировать текст» или «Показать текст».')}
+function copyExport(){const e=lastExport;if(!e)return;
+ const ok=()=>toast('Текст скопирован. Вставь его в заметки или сообщение.');
+ const fb=()=>{try{const ta=document.createElement('textarea');ta.value=e.text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();const r=document.execCommand('copy');ta.remove();r?ok():toast('Не удалось скопировать. Нажми «Показать текст» и выдели вручную.')}catch(x){toast('Не удалось скопировать. Нажми «Показать текст».')}};
+ if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(e.text).then(ok).catch(fb);else fb()}
+function showExport(){const e=lastExport;if(!e)return;
+ modal(`<h2>${esc(e.name)}</h2><textarea id="exptext" readonly style="min-height:240px;font-size:.8rem">${esc(e.text)}</textarea><div class="row" style="margin-top:10px"><button onclick="const t=document.getElementById('exptext');t.focus();t.select()">Выделить всё</button><button onclick="closeModal()">Закрыть</button></div>`)}
+function doExport(kind){
+ let name,text,type;const d=dayKey(Date.now());
+ try{XPM=xpMap();
+  if(kind==='csv'){name='akula-'+d+'.csv';text=csv();type='text/csv'}
+  else if(kind==='txt'){name='otchet-'+d+'.txt';text=report();type='text/plain'}
+  else{name='kopiya-'+d+'.json';text=JSON.stringify(S);type='application/json'}
+ }catch(err){toast('Не получилось сформировать файл: '+(err&&err.message?err.message:err),9000);return}
+ if(kind==='json'){S.lastBackup=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+ deliver(name,text,type)}
+function resetAll(){
+ let text;try{text=JSON.stringify(S)}catch(err){toast('Не получилось сформировать копию, стирание остановлено.');return}
+ const name='kopiya-'+dayKey(Date.now())+'.json';lastExport={name,text,type:'application/json'};
+ triggerDownload(name,text,'application/json');S.lastBackup=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+ modal(`<h2>Сначала копия данных</h2><p>Копия <b>${esc(name)}</b> скачивается автоматически. Если файл не появился, сохрани её кнопками ниже, прежде чем стирать.</p>${fallbackButtons()}<div class="row" style="margin-top:12px"><button onclick="closeModal()">Отмена</button><button class="danger" onclick="resetConfirm()">Продолжить стирание</button></div>`)}
+function resetConfirm(){ask('Точно стереть ВСЕ данные в приложении (записи, дневник, дела, достижения)? Это нельзя отменить.','Стереть всё',()=>{try{localStorage.removeItem(KEY)}catch(e){}S=load();tab='dossier';save();toast('Данные стёрты')},true)}
+function imp(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{let o;try{o=JSON.parse(r.result);if(!o||!Array.isArray(o.logs)||o.v!==5)throw 0}catch(e){toast('Не получилось прочитать файл: нужна копия из этой версии приложения');return}
+ ask('Заменить текущие данные ('+S.logs.length+' записей) данными из файла ('+o.logs.length+')?','Заменить',()=>{S=fill(o);save();toast('Данные загружены')},true)};r.readAsText(f)}
+
+document.getElementById('toast').onclick=()=>document.getElementById('toast').classList.remove('on');
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;render();scrollTo(0,0)});
+render();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
+</script>
+</body>
+</html>
